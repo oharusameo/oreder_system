@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>register</title>
+    <link rel="stylesheet" href="/js/element-ui/index.css">
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/axios.min.js"></script>
+    <script src="/js/element-ui/index.js"></script>
+</head>
+<body>
+<div id="app">
+    <template>
+        <form action="/user/register.do" method="post">
+            <el-form :model="user" status-icon ref="userForm" label-width="100px" class="demo-userForm">
+                <el-form-item label="账号" prop="pass">
+                    <el-input type="username" v-model="user.username" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" prop="checkPass">
+                    <el-input type="password" v-model="user.password" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-radio v-model="user.role" label="1">用户</el-radio>
+                <el-radio v-model="user.role" label="2">商家</el-radio>
+                <el-form-item>
+                    <el-button type="primary" v-on:click="submitForm('userForm')">注册</el-button>
+                    <el-button v-on:click="resetForm('userForm')">重置</el-button>
+                </el-form-item>
+            </el-form>
+        </form>
+    </template>
+</div>
+
+<script>
+
+    let vue = new Vue({
+        el:"#app",
+        data:{
+            user:{
+                username:'',
+                password:'',
+                role:1
+            }
+        },
+        methods:{
+            submitForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    console.log(this.user)
+                    if (valid) {
+                        axios.post("/user/register.do", this.user).then(function (response){
+                            console.log(response)
+                            alert("恭喜"+vue.user.username+"注册成功,即将返回首页")
+                            location.href = "login.html";
+                        })
+
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            }
+        }
+
+    })
+</script>
+
+
+</body>
+</html>

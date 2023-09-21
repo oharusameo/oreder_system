@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--命名空间必须是对应接口的全限定名-->
+<mapper namespace="com.quxue.orderSystem.mapper.OrderMapper">
+    <cache eviction="LRU"/>
+
+<select id="queryMyOrder" resultMap="OrderVoMap" resultType="com.quxue.orderSystem.vo.OrderVo">
+    select ot.order_id,
+           ot.goods_name,
+           ot.goods_num,
+           gt.goods_price,
+           (gt.goods_price * ot.goods_num) total_price,
+           ot.order_time,
+           (select t_user.user_name from t_user where t_user.id = #{id}) user_name
+    from t_order ot
+             left join t_goods gt on ot.goods_name = gt.goods_name
+    where customer_id = #{id}
+
+</select>
+
+
+    <select id="queryOrder" resultMap="OrderVoMap" resultType="com.quxue.orderSystem.vo.OrderVo">
+        select ot.order_id,
+               ot.goods_name,
+               ot.goods_num,
+               gt.goods_price,
+               (gt.goods_price * ot.goods_num)   total_price,
+               ot.order_time,ut.user_name
+        from goods_order_db.t_order ot
+                 left join t_goods gt on ot.goods_name = gt.goods_name
+                 left join t_user ut on customer_id=ut.id
+                  ${ew.customSqlSegment}
+
+#         select ot.order_id,
+#                ot.goods_name,
+#                ot.goods_num,
+#                gt.goods_price,
+#                (gt.goods_price * ot.goods_num)   total_price,
+#                ot.order_time,
+#                (select t_user.user_name from goods_order_db.t_user where t_user.id = customer_id) user_name
+#         from goods_order_db.t_order ot
+#                  left join goods_order_db.t_goods gt on ot.goods_name = gt.goods_name
+    </select>
+
+
+
+
+    <insert id="insertOrder" parameterType="map">
+        insert into goods_order_db.t_order (order_id, goods_name, goods_num, order_time, customer_id)
+        values (#{orderId}, (select goods_name from t_goods where t_goods.id = #{goodsId}), #{goodsNum},
+                #{orderTime}, #{userId})
+    </insert>
+
+    <resultMap id="OrderVoMap" type="com.quxue.orderSystem.vo.OrderVo">
+        <id column="id"/>
+        <result column="order_id" property="orderId"/>
+        <result column="goods_name" property="goodsName"/>
+        <result column="goods_num" property="goodsNum"/>
+        <result column="goods_price" property="goodsPrice"/>
+        <result column="total_price" property="totalPrice"/>
+        <result column="order_time" property="orderTime"/>
+        <result column="user_name" property="username"/>
+        <result column="customer_id" property="userId"/>
+    </resultMap>
+
+
+
+
+</mapper>

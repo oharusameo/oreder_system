@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/goods_order_db
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: ggzst321
+    type: com.zaxxer.hikari.HikariDataSource
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    druid:
+#      max-active: 10
+
+
+mybatis-plus:
+  type-aliases-package: com.quxue.orderSystem.pojo,com.quxue.orderSystem.vo
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #standand 标准输出
+
+

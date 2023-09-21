@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+
+    <style>
+
+    </style>
+    <link rel="stylesheet" href="/js/element-ui/index.css">
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/axios.min.js"></script>
+    <script src="/js/element-ui/index.js"></script>
+    <style>
+        .el-form {
+            width: 300px;
+        }
+
+
+    </style>
+
+</head>
+<body>
+<div id="app">
+     <span>
+         <el-button type="primary" size="mini" round v-on:click="register">用户注册</el-button>
+         <el-button type="warning" size="mini" round v-on:click="showList">查看用户列表</el-button>
+     </span>
+
+    <form action="/user/login.do" method="post">
+        <el-form :model="user" status-icon ref="userForm" label-width="100px" class="demo-userForm">
+            <el-form-item label="账号" prop="pass">
+                <el-input type="username" v-model="user.username" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="确认密码" prop="checkPass">
+                <el-input type="password" v-model="user.password" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" v-on:click="submitForm('userForm')">提交</el-button>
+                <el-button v-on:click="resetForm('userForm')">重置</el-button>
+            </el-form-item>
+        </el-form>
+    </form>
+
+    <script>
+        let vue = new Vue({
+            el: "#app",
+            data: {
+                user: {
+                    username: "",
+                    password: ""
+                }
+            },
+            methods: {
+                register: function () {
+                    location.href = "register.html";
+                },
+                showList: function () {
+                    location.href = "userList.html";
+                },
+
+                submitForm(formName) {
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            console.log(vue)
+                            axios.post("/user/login.do", this.user).then(function (response) {
+                                console.log(response)
+                                if (response.data.data.role === "2") {
+                                    location.href = "../merchantIndex.html";
+                                } else if (response.data.data.role === "1") {
+                                    location.href = "../userIndex.html";
+                                }
+                            })
+                        } else {
+                            console.log('error submit!!');
+                            return false;
+                        }
+                    });
+                },
+
+                resetForm(formName) {
+                    this.$refs[formName].resetFields();
+                }
+            }
+
+        })
+
+
+    </script>
+
+
+</div>
+</body>
+</html>

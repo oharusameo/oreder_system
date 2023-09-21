@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--命名空间必须是对应接口的全限定名-->
+<mapper namespace="com.quxue.orderSystem.mapper.GoodsMapper">
+    <cache eviction="LRU"/>
+
+
+    <select id="queryGoods" resultMap="goodsMap">
+        select * from goods_order_db.t_goods
+    </select>
+
+<insert id="insertGoods" parameterType="goods">
+    insert into goods_order_db.t_goods (goods_name, goods_price) values (#{goodsName},#{price})
+</insert>
+
+    <delete id="delete" >
+    delete from goods_order_db.t_goods where id=#{id}
+    </delete>
+
+    <update id="update" parameterType="goods">
+        update goods_order_db.t_goods
+        <set>
+            <if test="goodsName !=null">
+                goods_name = #{goodsName},
+            </if>
+            <if test="price !=null">
+                goods_price = #{price}
+            </if>
+        </set>
+        where id=#{goodsId}
+    </update>
+
+
+    <resultMap id="goodsMap" type="goods">
+        <id column="id" property="goodsId"/>
+        <result column="goods_name" property="goodsName"/>
+        <result column="goods_price" property="price"/>
+    </resultMap>
+
+
+
+</mapper>

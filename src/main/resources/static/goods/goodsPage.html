@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>goodsPage</title>
+    <link rel="stylesheet" href="/js/element-ui/index.css">
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/axios.min.js"></script>
+    <script src="/js/element-ui/index.js"></script>
+</head>
+<body>
+
+
+<div id="app">
+    <template>
+        <!--搜索表单-->
+        <el-form :inline="true" :model="goodsSearch" class="demo-form-inline">
+            <el-form-item label="商品名称">
+                <el-input v-model="goodsSearch.goodsName" placeholder="商品名称"></el-input>
+            </el-form-item>
+            <el-form-item label="商品价格">
+                <el-input v-model="goodsSearch.goodsPrice" placeholder="商品价格"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" v-on:click="onSubmit()">查询</el-button>
+            </el-form-item>
+        </el-form>
+
+        <!--批量删除和新增按钮-->
+        <el-button type="primary" type="text" v-on:click="dialogFormVisible = true">新增</el-button>
+        <el-button type="danger" v-on:click="batchDelete()">批量删除</el-button>
+
+        <!--新增弹出的对话框-->
+        <el-dialog title="新增商品" :visible.sync="dialogFormVisible">
+            <el-form :model="goods">
+                <el-form-item label="商品名称" :label-width="formLabelWidth">
+                    <el-input v-model="goods.goodsName" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="商品价格" :label-width="formLabelWidth">
+                    <el-input v-model="goods.price" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button v-on:click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" v-on:click="addGoods">确 定</el-button>
+            </div>
+        </el-dialog>
+
+
+        <el-dialog title="修改商品信息" :visible.sync="dialogUpdateFormVisible">
+            <el-form :model="editGoods">
+                <el-form-item label="商品名称" :label-width="formLabelWidth">
+                    <el-input v-model="editGoods.goodsName" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="商品价格" :label-width="formLabelWidth">
+                    <el-input v-model="editGoods.price" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button v-on:click="dialogUpdateFormVisible = false">取 消</el-button>
+                <el-button type="primary" v-on:click="submitEdit">确 定</el-button>
+            </div>
+        </el-dialog>
+
+        <!--商品列表表格-->
+        <el-table
+                :data="goodsList"
+                style="width: 100%" v-on:selection-change="handleSelectionChange">
+            <el-table-column
+                    type="selection"
+                    width="55">
+            </el-table-column>
+            <el-table-column
+                    prop="goodsId"
+                    label="商品id"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="goodsName"
+                    label="商品名称"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="price"
+                    label="商品价格">
+            </el-table-column>
+            <el-table-column label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            v-on:click="handleEdit(scope.$index, scope.row)">编辑
+                    </el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            v-on:click="handleDelete(scope.$index, scope.row)">删除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <!--        分页栏-->
+        <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handlePageChange"
+                :current-page="currentPage"
+                :page-sizes="[2, 4, 5, 6]"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="totalCount">
+        </el-pagination>
+
+
+    </template>
+</div>
+
+
+<script>
+    let vue = new Vue({
+        el: "#app",
+        data: {
+            /*搜索表单的模型数据*/
+            goodsSearch: {
+                goodsName: '',
+                goodsPrice: ''
+            },
+            // 新增商品弹出框数据模型
+            goods: {
+                goodsName: '',
+                price: ''
+            },
+            editGoods: {
+                goodsId: '',
+                goodsName: '',
+                price: ''
+            },
+            goodsList: [],
+            /*复选框选中以后数据的存储数组*/
+            multipleSelection: [],
+
+            /*对话框弹出隐藏的属性*/
+            dialogTableVisible: false,
+            dialogFormVisible: false,
+            dialogUpdateFormVisible: false,
+            formLabelWidth: '120px',
+
+            // 分页属性
+            currentPage: 1,
+            pageSize: 5,
+            totalCount: 0
+
+        },
+
+        mounted() {
+            this.displayData();
+        },
+        methods: {
+            displayData: function () {
+                axios.get("/goods/listGoods.do?currentPage=" + this.currentPage + "&pageSize=" + this.pageSize).then(function (response) {
+                    console.log(response)
+                    vue.goodsList = response.data.data.records;
+                    vue.totalCount = response.data.data.total
+                })
+            },
+            addGoods: function () {
+                vue.dialogFormVisible = true;
+                console.log(vue.goods);
+                axios.post("/goods/addGoods.do", vue.goods).then(function (response) {
+                    if (response.data.code == 200) {
+                        alert("添加商品成功");
+                        // location.href = "goodsPage.html"
+                        vue.displayData();
+                        vue.dialogFormVisible = false;
+                    } else {
+                        alert(response.data.msg)
+                    }
+                    vue.goods.goodsName = '',
+                        vue.goods.price = ''
+                })
+            },
+
+            batchDelete: function () {
+
+            },
+            /*搜索表单提交函数*/
+            onSubmit() {
+                console.log('submit!');
+            },
+            /*复选框选中触发的函数*/
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+                console.log(this.multipleSelection)
+            },
+            handleDelete(index, row) {
+                console.log("goodsId=" + (index , row).goodsId)
+                let goodsId = (index, row).goodsId;
+                this.$confirm('确定要删除此数据吗，删除以后不可恢复?', '温馨提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                        axios.get("/goods/delGoods.do?goodsId=" + goodsId).then(function (response) {
+                            if (response.data.code == 200) {
+                                alert("删除商品成功")
+                                vue.displayData();
+                            } else {
+                                alert(response.data.msg)
+                            }
+                        })
+                    }
+                )
+            },
+            handleEdit(index, row) {
+                vue.dialogUpdateFormVisible = true
+                vue.editGoods.goodsName = (index, row).goodsName
+                vue.editGoods.goodsId = (index, row).goodsId
+                vue.editGoods.price = (index, row).price
+            },
+            submitEdit() {
+                console.log(vue.editGoods)
+                axios.post("/goods/updateGoods.do", vue.editGoods).then(function (response) {
+                    if (response.data.code == 200) {
+                        vue.dialogUpdateFormVisible = false;
+                        alert("修改商品信息成功");
+                        vue.displayData();
+                    } else {
+                        alert(response.data.msg)
+                    }
+                })
+                vue.editGoods.goodsName = '',
+                    vue.editGoods.goodsId = '',
+                    vue.editGoods.price = ''
+
+            },
+
+            handleSizeChange(val) {
+                vue.pageSize = val;
+                //修改每页显示的数量后，设置当前页面回到第一页
+                vue.currentPage = 1;
+                vue.displayData();
+            },
+            handlePageChange(val) {
+                vue.currentPage = val;
+                vue.displayData();
+            },
+
+        }
+
+
+    })
+</script>
+
+</body>
+</html>

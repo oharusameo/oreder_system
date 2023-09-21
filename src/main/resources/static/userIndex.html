@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/js/element-ui/index.css">
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/element-ui/index.js"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #app {
+            height: 100%;
+        }
+
+        .el-header, .el-footer {
+            background-color: #B3C0D1;
+            color: #333;
+            text-align: center;
+            line-height: 60px;
+        }
+
+        .el-aside {
+            background-color: #D3DCE6;
+            color: #333;
+            text-align: center;
+            line-height: 200px;
+        }
+
+        .el-main {
+            background-color: #E9EEF3;
+            color: #333;
+            text-align: center;
+            line-height: 160px;
+        }
+
+        .el-container {
+            height: 100%;
+        }
+
+        .el-footer {
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+        }
+
+        #iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-header>欢迎使用趣学订单系统</el-header>
+        <el-container>
+            <el-aside width="200px">
+
+                <el-tree node-key="id" :default-expanded-keys="[1]" :data="menu" :props="defaultProps"
+                         @node-click="handleNodeClick"></el-tree>
+            </el-aside>
+            <el-container>
+                <el-main>
+                    <!--编写一个页面框架-->
+                    <iframe id="iframe" src="welcome.html"></iframe>
+                </el-main>
+                <el-footer>© 趣学无限责任公司.版权所有</el-footer>
+            </el-container>
+        </el-container>
+    </el-container>
+
+</div>
+
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            menu: [{
+                id: 1,
+                label: '系统管理',
+                children: [{
+                    label: '商品一览',
+                    url: "/goods/userGoodsPage.html"
+                }, {
+                    label: '我的订单',
+                    url: "/order/userOrderList.html"
+                }
+                ]
+            }, {
+                label: '一级 2',
+                children: [{
+                    label: '二级 2-1',
+                    children: [{
+                        label: '三级 2-1-1'
+                    }]
+                }, {
+                    label: '二级 2-2',
+                    children: [{
+                        label: '三级 2-2-1'
+                    }]
+                }]
+            }, {
+                label: '一级 3',
+                children: [{
+                    label: '二级 3-1',
+                    children: [{
+                        label: '三级 3-1-1'
+                    }]
+                }, {
+                    label: '二级 3-2',
+                    children: [{
+                        label: '三级 3-2-1'
+                    }]
+                }]
+            }],
+            defaultProps: {
+                children: 'children',
+                label: 'label'
+            }
+        },
+        methods: {
+            handleNodeClick(data) {
+                //子菜单，可以跳转
+                if (data.children == null) {
+                    console.log(data)
+                    console.log(data.url);
+                    document.getElementById("iframe").src = data.url;
+                }
+            }
+
+        }
+    })
+
+</script>
+
+
+</body>
+</html>

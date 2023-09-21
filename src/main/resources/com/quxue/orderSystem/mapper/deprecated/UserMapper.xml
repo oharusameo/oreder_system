@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--命名空间必须是对应接口的全限定名-->
+<mapper namespace="com.quxue.orderSystem.mapper.UserMapper">
+    <cache eviction="LRU"/>
+
+
+    <insert id="insertUser" parameterType="user">
+        insert into goods_order_db.t_user (user_name, user_pwd, user_role)
+        values (#{username}, #{password}, #{role})
+    </insert>
+
+    <select id="selectUser" parameterType="user" resultMap="userMap">
+        select *
+        from goods_order_db.t_user
+        where user_name = #{username}
+          and user_pwd = #{password}
+    </select>
+
+    <select id="selectAll" resultMap="userMap" >
+        select * from goods_order_db.t_user
+    </select>
+
+    <select id="selectAllUser" resultMap="userMap" >
+        select id,user_name from goods_order_db.t_user where user_role=1
+    </select>
+
+
+
+    <resultMap id="userMap" type="user">
+        <id column="id" property="userId"/>
+        <result column="user_name" property="username"/>
+        <result column="user_role" property="role"/>
+        <result column="user_pwd" property="password"/>
+    </resultMap>
+
+    <delete id="delUser">
+        delete  from goods_order_db.t_user where id=#{userId}
+    </delete>
+</mapper>
