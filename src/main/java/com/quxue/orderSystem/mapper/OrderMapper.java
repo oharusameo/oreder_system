@@ -8,7 +8,6 @@ import com.quxue.orderSystem.pojo.Order;
 import com.quxue.orderSystem.vo.OrderVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.yaml.snakeyaml.scanner.Constant;
 
 import java.util.List;
 import java.util.Map;
@@ -16,9 +15,7 @@ import java.util.Map;
 
 @Mapper
 public interface OrderMapper extends BaseMapper<Order> {
-    List<OrderVo> queryMyOrder(Integer UserId);
 
-//    List<OrderVo> queryOrder();
 
     List<OrderVo> queryOrder(@Param(Constants.WRAPPER) Wrapper<Map<String, Object>> wrapper);
 

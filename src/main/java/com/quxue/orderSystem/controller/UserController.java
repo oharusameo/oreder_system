@@ -4,11 +4,15 @@ package com.quxue.orderSystem.controller;
 import com.quxue.orderSystem.pojo.Result;
 import com.quxue.orderSystem.pojo.User;
 import com.quxue.orderSystem.service.UserService;
+import com.quxue.orderSystem.util.CookieUtil;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -34,21 +38,33 @@ public class UserController {
 
 
     @RequestMapping("/login.do")
-    public Result login(@RequestBody User user) {
+    public Result login(@Validated @RequestBody User user, HttpServletResponse resp) {
         System.out.println("user = " + user);
         User u = userService.selectUser(user);
         System.out.println("u = " + u);
         Result result;
         if (u != null) {
             result = Result.success(u);
+            CookieUtil.setCookie(resp, "username", u.getUsername(), 3600);
+            CookieUtil.setCookie(resp, "userId", u.getUserId(), 3600);
         } else {
             result = Result.error("账户名或密码错误");
         }
         return result;
     }
 
+    @RequestMapping("/logout.do")
+    public Result logout(@Validated @RequestBody User user, HttpServletResponse resp) {
+        System.out.println("user = " + user);
+        if (user != null) {
+            CookieUtil.clearCookie(resp, "username", "");
+            return Result.success("登出成功");
+        }
+        return Result.error("登出失败");
+    }
+
     @RequestMapping("/register.do")
-    public Result register(@RequestBody User user) {
+    public Result register(@Validated @RequestBody User user) {
         System.out.println("user = " + user);
         if (userService.insertUser(user) == 1) {
             return Result.success("注册成功");

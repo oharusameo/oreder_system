@@ -47,7 +47,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public List<OrderVo> selectMyOrder(Integer id) {
-        return orderMapper.queryMyOrder(id);
+        QueryWrapper<Map<String,Object>> wrapper = new QueryWrapper<>();
+        wrapper.eq("customer_id",id);
+        return orderMapper.queryOrder(wrapper);
     }
 
 }

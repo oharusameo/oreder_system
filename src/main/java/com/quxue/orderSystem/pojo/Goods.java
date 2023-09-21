@@ -18,7 +18,6 @@ public class Goods implements Serializable {
     @TableId(value = "id" ,type = IdType.AUTO)
     private String goodsId;
 
-//    @TableField("goods_name")
     private String goodsName;
 
     @TableField("goods_price")

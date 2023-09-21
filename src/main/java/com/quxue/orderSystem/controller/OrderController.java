@@ -6,6 +6,7 @@ import com.quxue.orderSystem.pojo.Order;
 import com.quxue.orderSystem.pojo.Result;
 import com.quxue.orderSystem.service.OrderService;
 import com.quxue.orderSystem.vo.OrderVo;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,11 +23,16 @@ public class OrderController {
 
     @RequestMapping("/viewOrder.do")
     public Result viewOrder() {
-
         List<OrderVo> list = orderService.selectAll();
         System.out.println("list = " + list);
         return Result.success(list);
+    }
 
+    @RequestMapping("/viewMyOrder.do")
+    public Result viewMyOrder(@Param("userId")Integer userId){
+        List<OrderVo> list = orderService.selectMyOrder(userId);
+        System.out.println("list = " + list);
+        return Result.success(list);
     }
 
 
