@@ -34,15 +34,6 @@
                  left join t_user ut on customer_id=ut.id
                   ${ew.customSqlSegment}
 
-#         select ot.order_id,
-#                ot.goods_name,
-#                ot.goods_num,
-#                gt.goods_price,
-#                (gt.goods_price * ot.goods_num)   total_price,
-#                ot.order_time,
-#                (select t_user.user_name from goods_order_db.t_user where t_user.id = customer_id) user_name
-#         from goods_order_db.t_order ot
-#                  left join goods_order_db.t_goods gt on ot.goods_name = gt.goods_name
     </select>
 
 

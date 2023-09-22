@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +15,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @TableName("t_goods")
+@ApiModel(value = "商品类",description = "这是商品类描述")
 public class Goods implements Serializable {
 
     @TableId(value = "id" ,type = IdType.AUTO)
@@ -20,6 +23,7 @@ public class Goods implements Serializable {
 
     private String goodsName;
 
+    @ApiModelProperty(value = "goods_price",required = true)
     @TableField("goods_price")
     private Integer price;
 

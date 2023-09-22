@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--命名空间必须是对应接口的全限定名-->
+<mapper namespace="com.quxue.orderSystem.mapper.MenuMapper">
+    <cache eviction="LRU"/>
+
+<select id="queryByRole" resultType="menu">
+    select mt.menu_id, menu_name, url, parent_id, menu_desc
+    from t_user ut
+             join t_role_menu rmt on ut.user_role = rmt.user_role
+             join t_menu mt on rmt.menu_id = mt.menu_id
+        ${ew.customSqlSegment}
+</select>
+
+
+
+
+</mapper>

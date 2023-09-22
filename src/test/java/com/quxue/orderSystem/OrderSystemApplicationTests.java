@@ -2,9 +2,11 @@ package com.quxue.orderSystem;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.quxue.orderSystem.mapper.GoodsMapper;
+import com.quxue.orderSystem.mapper.MenuMapper;
 import com.quxue.orderSystem.mapper.OrderMapper;
 import com.quxue.orderSystem.mapper.UserMapper;
 import com.quxue.orderSystem.pojo.Goods;
+import com.quxue.orderSystem.pojo.Menu;
 import com.quxue.orderSystem.pojo.User;
 import com.quxue.orderSystem.service.UserService;
 import com.quxue.orderSystem.vo.OrderVo;
@@ -18,36 +20,35 @@ import java.util.Map;
 @SpringBootTest
 class OrderSystemApplicationTests {
 
-@Autowired
-private GoodsMapper goodsMapper;
+    @Autowired
+    private GoodsMapper goodsMapper;
 
-@Autowired
-private UserService userService;
+    @Autowired
+    private UserService userService;
 
-@Autowired
-private OrderMapper orderMapper;
+    @Autowired
+    private OrderMapper orderMapper;
+
+    @Autowired
+    private MenuMapper menuMapper;
 
     @Test
-    public void testGoods(){
-        QueryWrapper<Goods> goodsQueryWrapper = new QueryWrapper<>();
-        List<Goods> goods = goodsMapper.selectList(goodsQueryWrapper);
-        System.out.println("goods = " + goods);
+    public void testMenu() {
+        QueryWrapper<Integer> wrapper = new QueryWrapper<>();
+        wrapper.eq("ut.user_role",2);
+        List<Menu> menus = menuMapper.queryByRole(wrapper);
+        System.out.println("menus = " + menus);
 
     }
 
-    @Test
-    public void testUser(){
 
-
-    }
     @Test
-    public void testOrder(){
+    public void testOrder() {
         QueryWrapper<Map<String, Object>> wrapper = new QueryWrapper<>();
-        wrapper.eq("ot.goods_name","应急食品");
+        wrapper.eq("ot.goods_name", "应急食品");
         List<OrderVo> orderVos = orderMapper.queryOrder(wrapper);
         System.out.println("orderVos = " + orderVos);
     }
-
 
 
 }
