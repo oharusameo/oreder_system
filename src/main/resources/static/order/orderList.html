@@ -50,23 +50,54 @@
             </el-table-column>
             </el-table-column>
         </el-table>
+        <!--        分页栏-->
+        <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handlePageChange"
+                :current-page="currentPage"
+                :page-sizes="[2, 4, 5, 6]"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="totalCount">
+        </el-pagination>
     </template>
 
 
 </div>
 
 <script>
-    let vue=new Vue({
+    let vue = new Vue({
         el: "#app",
         data: {
-            orderList: []
+            orderList: [],
+            // 分页属性
+            currentPage: 1,
+            pageSize: 5,
+            totalCount: 0
         },
         mounted() {
-            axios.get("/order/viewOrder.do").then(function (response) {
-                console.log(response)
-                vue.orderList = response.data.data;
-            })
+            this.displayData();
         },
+        methods: {
+            displayData: function () {
+                axios.get("/order/viewOrder.do?currentPage=" + this.currentPage + "&pageSize=" + this.pageSize).then(function (response) {
+                    console.log(response)
+                    vue.orderList = response.data.data.records;
+                    vue.totalCount = response.data.data.total
+                })
+            },
+
+            handleSizeChange(val) {
+                vue.pageSize = val;
+                //修改每页显示的数量后，设置当前页面回到第一页
+                vue.currentPage = 1;
+                vue.displayData();
+            },
+            handlePageChange(val) {
+                vue.currentPage = val;
+                vue.displayData();
+            },
+        }
 
     })
 </script>

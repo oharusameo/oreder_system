@@ -47,6 +47,7 @@ public class UserController {
             result = Result.success(u);
             CookieUtil.setCookie(resp, "username", u.getUsername(), 3600);
             CookieUtil.setCookie(resp, "userId", u.getUserId(), 3600);
+            CookieUtil.setCookie(resp,"role",u.getRole(),3600);
         } else {
             result = Result.error("账户名或密码错误");
         }

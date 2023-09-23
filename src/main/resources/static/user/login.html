@@ -65,13 +65,7 @@
                             console.log(vue)
                             axios.post("/user/login.do", this.user).then(function (response) {
                                 console.log(response)
-                                if (response.data.data.role === "2") {
-                                    location.href = "../merchantIndex.html";
-                                } else if (response.data.data.role === "1") {
-                                    location.href = "../userIndex.html";
-                                }else if (response.data.data.role==="3"){
-                                    location.href ="../adminIndex.html";
-                                }
+                                location.href = "../index/Index.html";
                             })
                         } else {
                             console.log('error submit!!');

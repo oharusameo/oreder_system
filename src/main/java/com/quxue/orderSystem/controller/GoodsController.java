@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
-
 @RestController
 @RequestMapping("/goods")
 @Api(tags = {"商品Api"})
@@ -57,12 +56,7 @@ public class GoodsController {
         return Result.error("更新商品信息失败");
     }
 
-    @ApiIgnore//该接口不生成接口文档
-    @RequestMapping("/listGoodsByPage.do")
-    public Result viewGoodsByPage(@RequestParam(defaultValue = "1") Integer currentPage, @RequestParam(defaultValue = "10") Integer pageSize) {
-return null;
 
-    }
 
 
 }

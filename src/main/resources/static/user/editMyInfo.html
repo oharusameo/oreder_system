@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>userList</title>
+    <link rel="stylesheet" href="/js/element-ui/index.css">
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/axios.min.js"></script>
+    <script src="/js/element-ui/index.js"></script>
+</head>
+<body>
+<div id="app">
+    <template>
+        <el-table
+                :data="userList"
+                style="width: 100%">
+            <el-table-column
+                    prop="userId"
+                    label="用户id"
+                    width="100">
+            </el-table-column>
+            <el-table-column
+                    prop="username"
+                    label="用户名称"
+                    width="100">
+            </el-table-column>
+            <el-table-column
+                    prop="password"
+                    label="密码"
+                    width="100">
+            </el-table-column>
+            <el-table-column
+                    prop="role"
+                    label="角色"
+                    width="100">
+            </el-table-column>
+        </el-table>
+    </template>
+</div>
+
+
+<script>
+     let vue=new Vue({
+        el: "#app",
+        data: {
+            userList: []
+        },
+        mounted() {
+            axios.get("/user/listAllUser.do").then(function (response) {
+                console.log(response)
+                vue.userList = response.data.data;
+            })
+        },
+
+    })
+
+</script>
+</body>
+</html>

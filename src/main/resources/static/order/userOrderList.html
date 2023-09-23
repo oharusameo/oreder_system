@@ -60,25 +60,39 @@
         el: "#app",
         data: {
             orderList: [],
-            recentUser:''
+            // 分页属性
+            currentPage: 1,
+            pageSize: 5,
+            totalCount: 0
         },
         mounted() {
-            axios.get("/order/viewOrder.do").then(function (response) {
-                console.log(response)
-                vue.recentUser=Cookie.get("username")
-                console.log(vue.recentUser)
-                let arr = response.data.data;
-                vue.orderList=arr.filter(function (x,index){
-                    return arr[index].username===vue.recentUser
-                })
-                console.log(vue.orderList)
-            })
+            this.displayData()
         },
+        methods: {
+            displayData: function () {
+                axios.get("/order/viewMyOrder.do?currentPage=" + this.currentPage + "&pageSize=" + this.pageSize).then(function (response) {
+                    console.log(response)
+                    vue.orderList = response.data.data.records;
+                    vue.totalCount = response.data.data.total
+                })
+            },
+
+            handleSizeChange(val) {
+                vue.pageSize = val;
+                //修改每页显示的数量后，设置当前页面回到第一页
+                vue.currentPage = 1;
+                vue.displayData();
+            },
+            handlePageChange(val) {
+                vue.currentPage = val;
+                vue.displayData();
+            },
+        }
     })
     let Cookie = {
         set: function (key, value, exdays) {
             //校验Key, key中不能有等号【=】
-            if(key.indexOf("=") !== -1) {
+            if (key.indexOf("=") !== -1) {
                 throw new Error("Cookie不支持key中使用等号【=】, key:" + key)
             }
             let exdate = new Date() // 获取时间
